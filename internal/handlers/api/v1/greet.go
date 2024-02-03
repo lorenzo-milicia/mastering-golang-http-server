@@ -3,11 +3,9 @@ package v1
 import (
 	"encoding/json"
 	"net/http"
-
-	"go.lorenzomilicia.com/go-master/http-server/internal/services/greet"
 )
 
-func handleGreet(s *greet.Service) http.HandlerFunc {
+func (h *Handler) handleGreet() http.HandlerFunc {
 	type request struct {
 		Name string
 	}
@@ -19,7 +17,7 @@ func handleGreet(s *greet.Service) http.HandlerFunc {
 			Name: r.URL.Query().Get("name"),
 		}
 		response := response{
-			Greeting: s.Greet(request.Name),
+			Greeting: h.GreetService.Greet(request.Name),
 		}
 		body, err := json.Marshal(response)
 		if err != nil {

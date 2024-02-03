@@ -10,5 +10,5 @@ type Handler struct {
 }
 
 func (h *Handler) Route(router *mux.Router) {
-	router.Handle("/greet", handleGreet(h.GreetService)).Methods("GET")
+	router.Handle("/greet", h.handleGreet()).Methods("GET")
 }

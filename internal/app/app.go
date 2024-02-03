@@ -19,14 +19,14 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) Routes() {
-	logger := func(next http.Handler) http.Handler {
-		return handlers.LoggingHandler(os.Stdout, next)
-	}
-	s.Router.Use(logger)
+	s.Router.Use(LoggerMiddleware)
 	v1handler := v1.Handler{
 		GreetService: &greet.Service{},
 	}
-	s.Router.Handle("/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(200) }))
 	v1router := s.Router.PathPrefix("/api/v1").Subrouter()
 	v1handler.Route(v1router)
+}
+
+func LoggerMiddleware(h http.Handler) http.Handler {
+	return handlers.LoggingHandler(os.Stdout, h)
 }
