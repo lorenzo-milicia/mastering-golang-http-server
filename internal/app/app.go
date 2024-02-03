@@ -30,12 +30,20 @@ func (s *Server) Routes() {
 		},
 	}
 	internalHandler := private.Handler{}
-	v1router := s.Router.PathPrefix("/api/v1").Subrouter()
-	v1handler.Route(v1router)
-	internalRouter := s.Router.PathPrefix("/internal").Subrouter()
-	internalHandler.Route(internalRouter)
+	routes := map[string]Router{
+		"/api/v1":   &v1handler,
+		"/internal": &internalHandler,
+	}
+	for path, router := range routes {
+		subr := s.Router.PathPrefix(path).Subrouter()
+		router.Route(subr)
+	}
 }
 
 func LoggerMiddleware(h http.Handler) http.Handler {
 	return handlers.LoggingHandler(os.Stdout, h)
+}
+
+type Router interface {
+	Route(*mux.Router)
 }
