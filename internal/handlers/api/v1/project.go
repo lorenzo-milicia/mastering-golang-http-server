@@ -14,6 +14,11 @@ func handleProject(r *mux.Router, s *project.Service) {
 	r.Handle("", handleProjectPost(s)).Methods("POST")
 }
 
+func handleProject22(path string, mux *http.ServeMux, s *project.Service) {
+	mux.Handle("GET "+path+"/", handleProjectGet(s))
+	mux.Handle("POST "+path+"/", handleProjectPost(s))
+}
+
 func handleProjectGet(s *project.Service) http.HandlerFunc {
 	type project struct {
 		Name string `json:"name"`
